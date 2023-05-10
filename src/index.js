@@ -1,10 +1,10 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {createElement} from './utils.js';
 import App from './app.js';
 import Store from './store.js';
 
 const store = new Store({
+  uniqueCode: 7,
   list: [
     {code: 1, title: 'Название элемента'},
     {code: 2, title: 'Некий объект'},
