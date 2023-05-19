@@ -1,0 +1,27 @@
+.Cart-container {
+   width: 100%;
+   margin-top: 71px;
+}
+
+.container-helper {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   width: 100%;
+   height: 195.8px;
+}
+
+.container-footer {
+   display: flex;
+   align-items: center;
+   justify-content: flex-end;
+   width: 100%;
+   height: 63px;
+   margin-bottom: 70px;
+   font-weight: 700;
+}
+
+.footer-total {
+   margin-left: 53px;
+   width: 170px;
+}

@@ -1,8 +1,10 @@
-import React, {useCallback} from 'react';
+import React, {useCallback} from "react";
 import List from "./components/list";
-import Controls from "./components/controls";
 import Head from "./components/head";
 import PageLayout from "./components/page-layout";
+import Modal from "./components/modal";
+import Cart from "./components/cart";
+import CartState from "./components/cart-state";
 
 /**
  * Приложение
@@ -12,28 +14,47 @@ import PageLayout from "./components/page-layout";
 function App({store}) {
 
   const list = store.getState().list;
+  const cartList = store.getState().cartList;
+  const isVisible = store.getState().isModalVisible;
 
   const callbacks = {
-    onDeleteItem: useCallback((code) => {
-      store.deleteItem(code);
+    onOpenModal: useCallback(() => {
+      store.openModal();
     }, [store]),
 
-    onSelectItem: useCallback((code) => {
-      store.selectItem(code);
+    onCloseModal: useCallback(() => {
+      store.closeModal();
     }, [store]),
 
-    onAddItem: useCallback(() => {
-      store.addItem();
-    }, [store])
+    onAddCartItem: useCallback((e) => {
+      store.addCartItem(Number(e.target.id));
+    }, [store]),
+
+    onDeleteCartItem: useCallback((e) => {
+      store.deleteCartItem(Number(e.target.id));
+    }, [store]),
   }
 
   return (
     <PageLayout>
-      <Head title='Приложение на чистом JS'/>
-      <Controls onAdd={callbacks.onAddItem}/>
-      <List list={list}
-            onDeleteItem={callbacks.onDeleteItem}
-            onSelectItem={callbacks.onSelectItem}/>
+      <Head title='Магазин'/>
+      <CartState 
+        cartList={cartList}
+        action={callbacks.onOpenModal} 
+        actionsName='Перейти'
+      />
+      <List 
+        list={list}
+        action={callbacks.onAddCartItem}
+        actionName='Добавить'
+      />
+      <Modal visible={isVisible} setVisible={callbacks.onCloseModal}>
+        <Cart 
+          cartList={cartList} 
+          onCloseCart={callbacks.onCloseModal}
+          onDeleteCartItem={callbacks.onDeleteCartItem}
+        />
+      </Modal>
     </PageLayout>
   );
 }

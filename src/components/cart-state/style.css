@@ -1,0 +1,10 @@
+.CartState {
+   display: flex;
+   justify-content: flex-end;
+   align-items: center;
+}
+
+.CartState-count {
+   margin-left: 15px;
+   font-weight: 700;
+}

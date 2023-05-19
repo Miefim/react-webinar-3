@@ -49,3 +49,33 @@ export const generateCode1 = (function (start = 0) {
 export function generateCode2() {
   return generateCode2.value ? ++generateCode2.value : generateCode2.value = 1;
 }
+
+export function priceFormatting(number) {
+  const elements = String(number)
+  if(elements.length <= 3){
+    return `${elements} ₽`
+  }
+  else {
+    let count = 0
+    let formattedPrice = ''
+    for(let i = elements.length - 1; i >= 0; i--){
+      if(count < 3){
+        formattedPrice += elements[i] 
+        count++
+      }
+      else if(count === 3){
+        formattedPrice += ` ${elements[i]}`
+        count = 1
+      }
+    }
+    return `${formattedPrice.split('').reverse().join('')} ₽`
+  }
+}
+
+export function totalCalculation(cartArray) {
+  let total = 0
+  cartArray.forEach(el => {
+    total += el.price * el.count
+  })
+  return total
+}
