@@ -5,6 +5,7 @@ import PageLayout from "./components/page-layout";
 import Modal from "./components/modal";
 import Cart from "./components/cart";
 import CartState from "./components/cart-state";
+import Item from "./components/item";
 
 /**
  * Приложение
@@ -44,9 +45,15 @@ function App({store}) {
         actionsName='Перейти'
       />
       <List 
-        list={list}
-        action={callbacks.onAddCartItem}
-        actionName='Добавить'
+        list={list} 
+        renderItem={(item) => 
+          <Item 
+            item={item} 
+            key={item.code} 
+            action={callbacks.onAddCartItem} 
+            actionName='Добавить'
+          />
+        }
       />
       <Modal visible={isVisible} setVisible={callbacks.onCloseModal}>
         <Cart 

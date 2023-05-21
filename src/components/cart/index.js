@@ -1,9 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
+import {totalCalculation, priceFormatting} from "../../utils"
 import Head from "../head";
 import Controls from "../controls";
 import List from "../list";
-import {totalCalculation, priceFormatting} from "../../utils"
+import ItemCart from "../item-cart";
 import "./style.css";
 
 function Cart({cartList, onCloseCart, onDeleteCartItem}){
@@ -23,9 +24,15 @@ function Cart({cartList, onCloseCart, onDeleteCartItem}){
               <div className='container-helper'>Пустая корзина</div>
             :
               <List 
-                list={cartList}
-                action={onDeleteCartItem}
-                actionName='Удалить'
+                list={cartList} 
+                renderItem={(item) => 
+                  <ItemCart 
+                    item={item} 
+                    key={item.code} 
+                    action={onDeleteCartItem} 
+                    actionName='Удалить'
+                  />
+                }
               />
           }
           {!isEmptyCart && 

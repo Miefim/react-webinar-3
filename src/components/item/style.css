@@ -2,6 +2,10 @@
   display: flex;
   justify-content: flex-start;
   transition: background-color 1s;
+  border-bottom: 1px dashed #ccc;
+}
+.Item:first-child {
+  border-top: 1px dashed #ccc;
 }
 
 .Item-code {

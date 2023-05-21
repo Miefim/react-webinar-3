@@ -1,36 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Item from "../item";
 import "./style.css";
 
-function List({list, action, actionName}){
+function List({list, renderItem}){
   return (
-    <div className='List'>{
-      list.map(item =>
-        <div key={item.code} className='List-item'>
-          <Item 
-            item={item} 
-            count={item.count} 
-            action={action} 
-            actionName={actionName}
-          />
-        </div>
-      )}
-    </div>
+    <div className='List'>{list.map(item => renderItem(item))}</div>
   )
 }
 
 List.propTypes = {
-  list: PropTypes.arrayOf(PropTypes.shape({
-    code: PropTypes.number
-  })).isRequired,
-  action: PropTypes.func,
-  actionName: PropTypes.string
+  list: PropTypes.array.isRequired,
+  renderItem: PropTypes.func.isRequired
 };
-
-List.defaultProps = {
-  action: () => {},
-  actionName: 'Кнопка'
-}
 
 export default React.memo(List);

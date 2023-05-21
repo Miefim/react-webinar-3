@@ -4,7 +4,7 @@ import Controls from "../controls";
 import {priceFormatting} from "../../utils"
 import "./style.css";
 
-function Item({action, actionName, count, ...props}){
+function Item(props){
   return (
     <div className='Item'>
       <div className='Item-code'>{props.item.code}</div>
@@ -14,13 +14,12 @@ function Item({action, actionName, count, ...props}){
       <div className='Item-price'>
         {priceFormatting(props.item.price)}
       </div>
-      {count && 
-        <div className='Item-count'>
-          {`${count} шт`}
-        </div>
-      }
       <div className='Item-action'>
-        <Controls id={props.item.code} action={action} actionName={actionName}/>
+        <Controls 
+          id={props.item.code} 
+          action={props.action} 
+          actionName={props.actionName}
+        />
       </div>
     </div>
   );
@@ -30,12 +29,10 @@ Item.propTypes = {
   item: PropTypes.shape({
     code: PropTypes.number,
     title: PropTypes.string,
-    count: PropTypes.number,
     price: PropTypes.number,
   }).isRequired,
   action: PropTypes.func,
-  actionName: PropTypes.string,
-  count: PropTypes.number
+  actionName: PropTypes.string
 };
 
 Item.defaultProps = {
