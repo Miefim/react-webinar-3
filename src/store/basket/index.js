@@ -6,7 +6,9 @@ class Basket extends StoreModule {
     return {
       list: [],
       sum: 0,
-      amount: 0
+      amount: 0,
+      isLoading: false,
+      error: null
     }
   }
 
@@ -14,7 +16,7 @@ class Basket extends StoreModule {
    * Добавление товара в корзину
    * @param _id Код товара
    */
-  addToBasket(_id) {
+  async addToBasket(_id) {
     let sum = 0;
     // Ищем товар в корзине, чтобы увеличить его количество
     let exist = false;
@@ -30,11 +32,41 @@ class Basket extends StoreModule {
 
     if (!exist) {
       // Поиск товара в каталоге, чтобы его добавить в корзину.
-      // @todo В реальном приложении будет запрос к АПИ вместо поиска по состоянию.
-      const item = this.store.getState().catalog.list.find(item => item._id === _id);
-      list.push({...item, amount: 1}); // list уже новый, в него можно пушить.
-      // Добавляем к сумме.
-      sum += item.price;
+      try {
+
+        this.setState({
+          ...this.getState(),
+          isLoading: true,
+          error: null
+        }, 'Изменение статуса загрузки')
+
+        const response = await fetch(`/api/v1/articles/${_id}`)
+        const json = await response.json()
+
+        list.push({
+          _id: json.result._id,
+          title: json.result.title,
+          price: json.result.price,
+          amount: 1
+        }) // list уже новый, в него можно пушить.
+        
+        // Добавляем к сумме.
+        sum += json.result.price
+
+        this.setState({
+          ...this.getState(),
+          isLoading: false,
+        }, 'Изменение статуса загрузки')
+
+      } catch (error) {
+
+        this.setState({
+          ...this.getState(),
+          isLoading: false,
+          error: 'Ошибка'
+        }, 'Изменение статуса ошибки')
+        
+      }
     }
 
     this.setState({

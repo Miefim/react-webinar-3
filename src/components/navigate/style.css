@@ -1,0 +1,10 @@
+.Navigate {
+   padding: 20px;
+}
+
+.Navigate-item {
+   margin-right: 10px;
+   color: #0087E9;
+   font-size: 18px;
+   text-decoration: underline;
+}

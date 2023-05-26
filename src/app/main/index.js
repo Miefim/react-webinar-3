@@ -1,6 +1,8 @@
 import {memo, useCallback, useEffect} from 'react';
 import Item from "../../components/item";
 import PageLayout from "../../components/page-layout";
+import PageTools from '../../components/page-tools';
+import Navigate from '../../components/navigate';
 import Head from "../../components/head";
 import BasketTool from "../../components/basket-tool";
 import List from "../../components/list";
@@ -14,7 +16,9 @@ function Main() {
   const store = useStore();
 
   useEffect(() => {
-    store.actions.catalog.load();
+    if(!select.list.length){
+      store.actions.catalog.load(select.page);
+    }
   }, []);
 
   const select = useSelector(state => ({
@@ -26,8 +30,6 @@ function Main() {
     amount: state.basket.amount,
     sum: state.basket.sum
   }));
-
-  console.log(select.isLoading, select.error)
 
   const callbacks = {
     // Добавление в корзину
@@ -50,8 +52,14 @@ function Main() {
   return (
     <PageLayout>
       <Head title='Магазин'/>
-      <BasketTool onOpen={callbacks.openModalBasket} amount={select.amount}
-                  sum={select.sum}/>
+      <PageTools>
+        <Navigate/>
+        <BasketTool 
+          onOpen={callbacks.openModalBasket} 
+          amount={select.amount}
+          sum={select.sum}
+        />
+      </PageTools>
       {select.isLoading && <div className='helperContainer'>Загрузка...</div>}
       {select.error && <div className='helperContainer'>{select.error}</div>}
       {!select.isLoading && !select.error && <List list={select.list} renderItem={renders.item}/>}  
@@ -63,6 +71,7 @@ function Main() {
           activePage={select.page}
         />
       </div>
+      
     </PageLayout>
   );
 }

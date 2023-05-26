@@ -1,18 +1,29 @@
-import React, {memo} from 'react';
-import './style.css';
+import React, {memo} from 'react'
+import PropTypes from "prop-types"
+import './style.css'
 
 function Pagination({total, limit, setPage, activePage}) {
+
    const activeIndex = activePage - 1
    const pagesCount = Math.ceil(total / limit)
+   
    return (
       <div className='pagination'>
          {
             [...new Array(pagesCount)].map((_, i) => {
-               const isRenderSeparate = (i === 1 && activeIndex > 2 && pagesCount > 4) || (i === pagesCount - 2 && activeIndex < pagesCount - 3 && pagesCount > 4)
+               const isRenderSeparateFirstCondition = i === 1 && activeIndex > 2 && pagesCount > 4
+               const isRenderSeparateSecondCondition = i === pagesCount - 2 && activeIndex < pagesCount - 3 && pagesCount > 4
+               
                const isFirstItem = i === 0
                const isLastItem = i === pagesCount - 1
-               const isRenderItem = isFirstItem || isLastItem || (i < 3 && activeIndex < 4) || (i > pagesCount - 4 && activeIndex > pagesCount - 4) || i === activeIndex - 1 || i === activeIndex + 1 || i === activeIndex
+               const isWithinFirstThree = i < 3 && activeIndex < 4
+               const isWithinLastThree = i > pagesCount - 4 && activeIndex > pagesCount - 4
+               const isAdjacentToActive = i === activeIndex - 1 || i === activeIndex + 1
+               const isActive = i === activeIndex
                
+               const isRenderSeparate = isRenderSeparateFirstCondition || isRenderSeparateSecondCondition
+               const isRenderItem = isFirstItem || isLastItem || isWithinFirstThree || isWithinLastThree || isAdjacentToActive || isActive
+
                if(isRenderSeparate){
                   return(
                      <div 
@@ -37,7 +48,14 @@ function Pagination({total, limit, setPage, activePage}) {
             })
          }
       </div>
-   );
+   )
 }
 
-export default memo(Pagination);
+Pagination.propTypes = {
+   total: PropTypes.number,
+   limit: PropTypes.number,
+   setPage: PropTypes.func,
+   activePage: PropTypes.number,
+}
+
+export default memo(Pagination)
