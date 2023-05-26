@@ -1,5 +1,6 @@
 import {memo, useCallback, useEffect} from "react"
 import {useParams} from "react-router-dom"
+import {translator} from "../../utils"
 import PageLayout from "../../components/page-layout"
 import Head from "../../components/head"
 import BasketTool from "../../components/basket-tool"
@@ -21,6 +22,7 @@ function Details() {
    },[params.id])
 
    const select = useSelector(state => ({
+      language: state.language.language,
       id: state.details.id,
       title: state.details.title,
       description: state.details.description,
@@ -38,23 +40,29 @@ function Details() {
 
    const callbacks = {
       openModalBasket: useCallback(() => store.actions.modals.open('basket'), [store]),
-      addToBasket: useCallback((id) => store.actions.basket.addToBasket(id), [store])
+      addToBasket: useCallback((id) => store.actions.basket.addToBasket(id), [store]),
+      onChangeLang: useCallback((language) => store.actions.language.change(language), [store])
    }
 
    return (
       <PageLayout>
-         {select.error && <div className='helperContainer'>{select.error}</div>}
-         {select.isLoading && <div className='helperContainer'>Загрузка...</div>}
+         {select.isLoading && <div className='helperContainer'>{translator('Loading', select.language)}</div>}
+         {select.error && <div className='helperContainer'>{translator('ErrorServer', select.language)}</div>}
          {
             !select.error && !select.isLoading &&
             <>
-               <Head title={select.title}/>
+               <Head 
+                  title={select.title} 
+                  onChangeLang={callbacks.onChangeLang} 
+                  language={select.language}
+               />
                <PageTools>
-                  <Navigate/>
+                  <Navigate language={select.language}/>
                   <BasketTool 
                      onOpen={callbacks.openModalBasket} 
                      amount={select.amount}
                      sum={select.sum}
+                     language={select.language}
                   />
                </PageTools>
                <ProductDescription 
@@ -70,6 +78,7 @@ function Details() {
                   addToBasket={callbacks.addToBasket}
                   isLoading={select.isBasketLoading}
                   error={select.basketError}
+                  language={select.language}
                />
             </>
          }       

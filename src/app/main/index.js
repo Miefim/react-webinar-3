@@ -7,6 +7,7 @@ import Head from "../../components/head";
 import BasketTool from "../../components/basket-tool";
 import List from "../../components/list";
 import Pagination from '../../components/pagination';
+import {translator} from "../../utils"
 import useStore from "../../store/use-store";
 import useSelector from "../../store/use-selector";
 import "./style.css"
@@ -22,6 +23,7 @@ function Main() {
   }, []);
 
   const select = useSelector(state => ({
+    language: state.language.language,
     list: state.catalog.list,
     totalElements: state.catalog.total,
     isLoading: state.catalog.isLoading,
@@ -40,28 +42,35 @@ function Main() {
     setPageHandler: useCallback(async page => {
       await store.actions.catalog.load(page)
       store.actions.pagination.setPage(page)
-    }, [store])
+    }, [store]),
+    //Изменение языка
+    onChangeLang: useCallback((language) => store.actions.language.change(language), [store])
   }
 
   const renders = {
     item: useCallback((item) => {
-      return <Item item={item} onAdd={callbacks.addToBasket}/>
-    }, [callbacks.addToBasket]),
+      return <Item item={item} onAdd={callbacks.addToBasket} language={select.language}/>
+    }, [callbacks.addToBasket, select.language]),
   };
 
   return (
     <PageLayout>
-      <Head title='Магазин'/>
+      <Head 
+        title={translator('MainHeadTitle', select.language)} 
+        onChangeLang={callbacks.onChangeLang} 
+        language={select.language}
+      />
       <PageTools>
-        <Navigate/>
+        <Navigate language={select.language}/>
         <BasketTool 
           onOpen={callbacks.openModalBasket} 
           amount={select.amount}
           sum={select.sum}
+          language={select.language}
         />
       </PageTools>
-      {select.isLoading && <div className='helperContainer'>Загрузка...</div>}
-      {select.error && <div className='helperContainer'>{select.error}</div>}
+      {select.isLoading && <div className='helperContainer'>{translator('Loading', select.language)}</div>}
+      {select.error && <div className='helperContainer'>{translator('ErrorServer', select.language)}</div>}
       {!select.isLoading && !select.error && <List list={select.list} renderItem={renders.item}/>}  
       <div className='mainPaginationContainer'>
         <Pagination 
@@ -70,8 +79,7 @@ function Main() {
           setPage={callbacks.setPageHandler} 
           activePage={select.page}
         />
-      </div>
-      
+      </div> 
     </PageLayout>
   );
 }

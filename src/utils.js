@@ -1,3 +1,5 @@
+import {dictionary} from "./dictionary"
+
 /**
  * Плюрализация
  * Возвращает вариант с учётом правил множественного числа под указанную локаль
@@ -32,4 +34,14 @@ export function codeGenerator(start = 0) {
  */
 export function numberFormat(value, locale = 'ru-RU', options = {}) {
   return new Intl.NumberFormat(locale, options).format(value);
+}
+
+export function translator(element, language) {
+  let result
+  dictionary.forEach(el => {
+    if(el.title === element){
+      result = el[`${language}`]
+    }
+  })
+  return result
 }

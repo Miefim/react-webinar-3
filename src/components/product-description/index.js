@@ -1,40 +1,40 @@
 import { memo } from 'react'
 import PropTypes from "prop-types"
-import {numberFormat} from '../../utils'
+import {numberFormat, translator} from '../../utils'
 import "./style.css"
 
-function ProductDescription ({product, addToBasket, isLoading, error}) {
+function ProductDescription ({product, addToBasket, isLoading, error, language}) {
    return(
       <div className='ProductDescription'>
          <div className='ProductDescription-key'>{product.description}</div>
          <div className='ProductDescription-key'>
-            Страна производитель: 
+            {translator('DescriptionMadeIn', language)}: 
             <div className='key-value'>
                {product.madeIn}
             </div>
          </div>
          <div className='ProductDescription-key'>
-            Категория: 
+            {translator('DescriptionCategory', language)}: 
             <div className='key-value'>
                {product.category}
             </div>
          </div>
          <div className='ProductDescription-key'>
-            Год выпуска:
+            {translator('DescriptionEdition', language)}:
             <div className='key-value'>
                {product.edition}
             </div>
          </div>
          <div className='ProductDescription-price'>
-            Цена: {numberFormat(product.price)} ₽
+            {translator('DescriptionPrice', language)}: {numberFormat(product.price)} ₽
          </div>
          <button onClick={() => addToBasket(product.id)}>
             {
                !isLoading && !error
-               ?  'Добавить'
+               ?  translator('AddToCartButton', language)
                :  isLoading
-                  ?  'Загрузка...'
-                  :  error
+                  ?  translator('Loading', language)
+                  :  translator('ErrorServer', language)
             }
          </button>
       </div>
@@ -53,6 +53,7 @@ ProductDescription.propTypes = {
    addToBasket: PropTypes.func,
    isLoading: PropTypes.bool,
    error: PropTypes.string,
+   language: PropTypes.string
 }
 
 export default memo(ProductDescription)
