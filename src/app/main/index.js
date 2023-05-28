@@ -1,4 +1,5 @@
 import {memo, useCallback, useEffect} from 'react';
+import {translator} from "../../utils"
 import Item from "../../components/item";
 import PageLayout from "../../components/page-layout";
 import PageTools from '../../components/page-tools';
@@ -9,7 +10,6 @@ import List from "../../components/list";
 import Pagination from '../../components/pagination';
 import Loader from '../../components/loader';
 import Error from "../../components/error"
-import {translator} from "../../utils"
 import useStore from "../../store/use-store";
 import useSelector from "../../store/use-selector";
 
@@ -19,7 +19,7 @@ function Main() {
 
   useEffect(() => {
     if(!select.list.length){
-      store.actions.catalog.load(select.page);
+      store.actions.catalog.load(select.page, select.limit);
     }
   }, []);
 
@@ -27,6 +27,7 @@ function Main() {
     language: state.language.language,
     list: state.catalog.list,
     totalElements: state.catalog.total,
+    limit: state.catalog.limit,
     isLoading: state.catalog.isLoading,
     error: state.catalog.error,
     page: state.catalog.page,
@@ -40,17 +41,21 @@ function Main() {
     // Открытие модалки корзины
     openModalBasket: useCallback(() => store.actions.modals.open('basket'), [store]),
     // Обработка клика пагинации
-    setPageHandler: useCallback(async page => {
-      await store.actions.catalog.load(page)
-      store.actions.catalog.setPage(page)
-    }, [store]),
+    getList: useCallback(async page => await store.actions.catalog.load(page, select.limit), [store]),
     //Изменение языка
-    onChangeLang: useCallback((language) => store.actions.language.change(language), [store])
+    onChangeLang: useCallback(language => store.actions.language.change(language), [store])
   }
 
   const renders = {
     item: useCallback((item) => {
-      return <Item item={item} onAdd={callbacks.addToBasket} language={select.language}/>
+      return (
+        <Item 
+          item={item} 
+          onAdd={callbacks.addToBasket} 
+          language={select.language} 
+          link={`/articles/${item._id}`}
+        />
+      )
     }, [callbacks.addToBasket, select.language]),
   };
 
@@ -62,7 +67,7 @@ function Main() {
         language={select.language}
       />
       <PageTools>
-        <Navigate language={select.language} setCatalogPage={callbacks.setPageHandler}/>
+        <Navigate language={select.language} setCatalogPage={callbacks.getList}/>
         <BasketTool 
           onOpen={callbacks.openModalBasket} 
           amount={select.amount}
@@ -78,8 +83,8 @@ function Main() {
           <List list={select.list} renderItem={renders.item}/>  
           <Pagination 
             total={select.totalElements} 
-            limit={10} 
-            setPage={callbacks.setPageHandler} 
+            limit={select.limit} 
+            setPage={callbacks.getList} 
             activePage={select.page}
           />
         </>

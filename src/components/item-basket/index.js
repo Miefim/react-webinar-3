@@ -1,6 +1,5 @@
 import {memo} from 'react';
 import {Link} from 'react-router-dom';
-import propTypes from 'prop-types';
 import {numberFormat, translator, plural} from "../../utils";
 import {cn as bem} from "@bem-react/classname";
 import PropTypes from "prop-types";
@@ -19,7 +18,7 @@ function ItemBasket(props) {
     <div className={cn()}>
       <div className={cn('title')}>
         <Link 
-          to={`/articles/${props.item._id}`} 
+          to={props.link} 
           className={cn('link')} 
           onClick={callbacks.onCloseModal}
         >
@@ -49,8 +48,9 @@ ItemBasket.propTypes = {
     _id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     title: PropTypes.string,
     price: PropTypes.number,
-    amount: PropTypes.number
+    amount: PropTypes.number,
   }).isRequired,
+  link: PropTypes.string,
   onRemove: PropTypes.func,
   language: PropTypes.string
 }

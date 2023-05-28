@@ -13,6 +13,7 @@ class Catalog extends StoreModule {
       list: [],
       total: null,
       page: 1,
+      limit: 10,
       isLoading: false, 
       error: null
     }
@@ -34,6 +35,7 @@ class Catalog extends StoreModule {
         list: json.result.items,
         total: json.result.count,
         isLoading: false,
+        page,
       }, 'Загружены товары из АПИ');
 
     } catch (error) {
@@ -45,12 +47,6 @@ class Catalog extends StoreModule {
     }
   }
 
-  setPage(page){
-    this.setState({
-      ...this.getState(),
-      page: page
-    }, `Изменение страницы ${page}`);
-  }
 }
 
 export default Catalog;

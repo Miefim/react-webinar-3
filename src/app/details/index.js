@@ -26,6 +26,7 @@ function Details() {
       language: state.language.language,
       product: state.details,
       amount: state.basket.amount,
+      limit: state.catalog.limit,
       sum: state.basket.sum,
       isBasketLoading: state.basket.isLoading,
       basketError: state.basket.error,
@@ -35,10 +36,7 @@ function Details() {
       openModalBasket: useCallback(() => store.actions.modals.open('basket'), [store]),
       addToBasket: useCallback(id => store.actions.basket.addToBasket(id), [store]),
       onChangeLang: useCallback(language => store.actions.language.change(language), [store]),
-      setPageHandler: useCallback(async page => {
-         await store.actions.catalog.load(page)
-         store.actions.catalog.setPage(page)
-      }, [store])
+      getList: useCallback(async page => await store.actions.catalog.load(page, select.limit), [store])
    }
 
    return (
@@ -54,7 +52,7 @@ function Details() {
                   language={select.language}
                />
                <PageTools>
-                  <Navigate language={select.language} setCatalogPage={callbacks.setPageHandler}/>
+                  <Navigate language={select.language} setCatalogPage={callbacks.getList}/>
                   <BasketTool 
                      onOpen={callbacks.openModalBasket} 
                      amount={select.amount}
