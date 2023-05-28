@@ -7,10 +7,11 @@ import Head from "../../components/head";
 import BasketTool from "../../components/basket-tool";
 import List from "../../components/list";
 import Pagination from '../../components/pagination';
+import Loader from '../../components/loader';
+import Error from "../../components/error"
 import {translator} from "../../utils"
 import useStore from "../../store/use-store";
 import useSelector from "../../store/use-selector";
-import "./style.css"
 
 function Main() {
 
@@ -28,7 +29,7 @@ function Main() {
     totalElements: state.catalog.total,
     isLoading: state.catalog.isLoading,
     error: state.catalog.error,
-    page: state.pagination.page,
+    page: state.catalog.page,
     amount: state.basket.amount,
     sum: state.basket.sum
   }));
@@ -41,7 +42,7 @@ function Main() {
     // Обработка клика пагинации
     setPageHandler: useCallback(async page => {
       await store.actions.catalog.load(page)
-      store.actions.pagination.setPage(page)
+      store.actions.catalog.setPage(page)
     }, [store]),
     //Изменение языка
     onChangeLang: useCallback((language) => store.actions.language.change(language), [store])
@@ -61,7 +62,7 @@ function Main() {
         language={select.language}
       />
       <PageTools>
-        <Navigate language={select.language}/>
+        <Navigate language={select.language} setCatalogPage={callbacks.setPageHandler}/>
         <BasketTool 
           onOpen={callbacks.openModalBasket} 
           amount={select.amount}
@@ -69,17 +70,20 @@ function Main() {
           language={select.language}
         />
       </PageTools>
-      {select.isLoading && <div className='helperContainer'>{translator('Loading', select.language)}</div>}
-      {select.error && <div className='helperContainer'>{translator('ErrorServer', select.language)}</div>}
-      {!select.isLoading && !select.error && <List list={select.list} renderItem={renders.item}/>}  
-      <div className='mainPaginationContainer'>
-        <Pagination 
-          total={select.totalElements} 
-          limit={10} 
-          setPage={callbacks.setPageHandler} 
-          activePage={select.page}
-        />
-      </div> 
+      {select.isLoading && <Loader language={select.language}/>}
+      {select.error && <Error language={select.language}/>}
+      {
+        !select.isLoading && !select.error && 
+        <>
+          <List list={select.list} renderItem={renders.item}/>  
+          <Pagination 
+            total={select.totalElements} 
+            limit={10} 
+            setPage={callbacks.setPageHandler} 
+            activePage={select.page}
+          />
+        </>
+      }
     </PageLayout>
   );
 }

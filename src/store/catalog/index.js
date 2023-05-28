@@ -12,6 +12,7 @@ class Catalog extends StoreModule {
     return {
       list: [],
       total: null,
+      page: 1,
       isLoading: false, 
       error: null
     }
@@ -42,6 +43,13 @@ class Catalog extends StoreModule {
         isLoading: false,
       }, 'Изменение статуса ошибки');
     }
+  }
+
+  setPage(page){
+    this.setState({
+      ...this.getState(),
+      page: page
+    }, `Изменение страницы ${page}`);
   }
 }
 

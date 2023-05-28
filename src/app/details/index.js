@@ -1,11 +1,12 @@
 import {memo, useCallback, useEffect} from "react"
 import {useParams} from "react-router-dom"
-import {translator} from "../../utils"
 import PageLayout from "../../components/page-layout"
 import Head from "../../components/head"
 import BasketTool from "../../components/basket-tool"
 import PageTools from "../../components/page-tools"
 import Navigate from "../../components/navigate"
+import Loader from "../../components/loader"
+import Error from "../../components/error"
 import ProductDescription from "../../components/product-description"
 import useStore from "../../store/use-store"
 import useSelector from "../../store/use-selector"
@@ -14,24 +15,16 @@ function Details() {
 
    const store = useStore()
    const params = useParams()
-
+   
    useEffect(() => {
-      if(params.id !== select.id){
+      if(params.id !== select.product.id){
          store.actions.details.getDetails(params.id)
       }
    },[params.id])
 
    const select = useSelector(state => ({
       language: state.language.language,
-      id: state.details.id,
-      title: state.details.title,
-      description: state.details.description,
-      madeIn: state.details.madeIn,
-      price: state.details.price,
-      category: state.details.category,
-      edition: state.details.edition,
-      isLoading: state.details.isLoading, 
-      error: state.details.error,
+      product: state.details,
       amount: state.basket.amount,
       sum: state.basket.sum,
       isBasketLoading: state.basket.isLoading,
@@ -40,24 +33,28 @@ function Details() {
 
    const callbacks = {
       openModalBasket: useCallback(() => store.actions.modals.open('basket'), [store]),
-      addToBasket: useCallback((id) => store.actions.basket.addToBasket(id), [store]),
-      onChangeLang: useCallback((language) => store.actions.language.change(language), [store])
+      addToBasket: useCallback(id => store.actions.basket.addToBasket(id), [store]),
+      onChangeLang: useCallback(language => store.actions.language.change(language), [store]),
+      setPageHandler: useCallback(async page => {
+         await store.actions.catalog.load(page)
+         store.actions.catalog.setPage(page)
+      }, [store])
    }
 
    return (
       <PageLayout>
-         {select.isLoading && <div className='helperContainer'>{translator('Loading', select.language)}</div>}
-         {select.error && <div className='helperContainer'>{translator('ErrorServer', select.language)}</div>}
+         {select.product.isLoading && <Loader language={select.language}/>}
+         {select.product.error && <Error language={select.language}/>}
          {
-            !select.error && !select.isLoading &&
+            !select.product.error && !select.product.isLoading &&
             <>
                <Head 
-                  title={select.title} 
+                  title={select.product.title} 
                   onChangeLang={callbacks.onChangeLang} 
                   language={select.language}
                />
                <PageTools>
-                  <Navigate language={select.language}/>
+                  <Navigate language={select.language} setCatalogPage={callbacks.setPageHandler}/>
                   <BasketTool 
                      onOpen={callbacks.openModalBasket} 
                      amount={select.amount}
@@ -66,18 +63,10 @@ function Details() {
                   />
                </PageTools>
                <ProductDescription 
-                  product={{
-                     id: select.id, 
-                     title: select.title, 
-                     description: select.description, 
-                     madeIn: select.madeIn, 
-                     price: select.price, 
-                     category: select.category, 
-                     edition: select.edition
-                  }} 
+                  product={select.product}
                   addToBasket={callbacks.addToBasket}
-                  isLoading={select.isBasketLoading}
-                  error={select.basketError}
+                  isAddLoading={select.isBasketLoading}
+                  addError={select.basketError}
                   language={select.language}
                />
             </>

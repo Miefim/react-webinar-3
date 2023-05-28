@@ -1,9 +1,9 @@
-import { memo } from 'react'
+import {memo} from 'react'
 import PropTypes from "prop-types"
 import {numberFormat, translator} from '../../utils'
 import "./style.css"
 
-function ProductDescription ({product, addToBasket, isLoading, error, language}) {
+function ProductDescription ({product, addToBasket, language, isAddLoading, addError}) {
    return(
       <div className='ProductDescription'>
          <div className='ProductDescription-key'>{product.description}</div>
@@ -30,9 +30,9 @@ function ProductDescription ({product, addToBasket, isLoading, error, language})
          </div>
          <button onClick={() => addToBasket(product.id)}>
             {
-               !isLoading && !error
+               !isAddLoading && !addError
                ?  translator('AddToCartButton', language)
-               :  isLoading
+               :  isAddLoading
                   ?  translator('Loading', language)
                   :  translator('ErrorServer', language)
             }

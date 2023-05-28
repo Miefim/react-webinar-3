@@ -8,45 +8,47 @@ function Pagination({total, limit, setPage, activePage}) {
    const pagesCount = Math.ceil(total / limit)
    
    return (
-      <div className='pagination'>
-         {
-            [...new Array(pagesCount)].map((_, i) => {
-               const isRenderSeparateFirstCondition = i === 1 && activeIndex > 2 && pagesCount > 4
-               const isRenderSeparateSecondCondition = i === pagesCount - 2 && activeIndex < pagesCount - 3 && pagesCount > 4
-               
-               const isFirstItem = i === 0
-               const isLastItem = i === pagesCount - 1
-               const isWithinFirstThree = i < 3 && activeIndex < 4
-               const isWithinLastThree = i > pagesCount - 4 && activeIndex > pagesCount - 4
-               const isAdjacentToActive = i === activeIndex - 1 || i === activeIndex + 1
-               const isActive = i === activeIndex
-               
-               const isRenderSeparate = isRenderSeparateFirstCondition || isRenderSeparateSecondCondition
-               const isRenderItem = isFirstItem || isLastItem || isWithinFirstThree || isWithinLastThree || isAdjacentToActive || isActive
+      <div className='Pagination'>
+         <div className='Pagination-paginationItems'>
+            {
+               [...new Array(pagesCount)].map((_, i) => {
+                  const isRenderSeparateFirstCondition = i === 1 && activeIndex > 2 && pagesCount > 4
+                  const isRenderSeparateSecondCondition = i === pagesCount - 2 && activeIndex < pagesCount - 3 && pagesCount > 4
+                  
+                  const isFirstItem = i === 0
+                  const isLastItem = i === pagesCount - 1
+                  const isWithinFirstThree = i < 3 && activeIndex < 4
+                  const isWithinLastThree = i > pagesCount - 4 && activeIndex > pagesCount - 4
+                  const isAdjacentToActive = i === activeIndex - 1 || i === activeIndex + 1
+                  const isActive = i === activeIndex
+                  
+                  const isRenderSeparate = isRenderSeparateFirstCondition || isRenderSeparateSecondCondition
+                  const isRenderItem = isFirstItem || isLastItem || isWithinFirstThree || isWithinLastThree || isAdjacentToActive || isActive
 
-               if(isRenderSeparate){
-                  return(
-                     <div 
-                        className='pagination-separateItem'
-                        key={i}
-                     >
-                        ...
-                     </div>
-                  )
-               }
-               else if(isRenderItem){
-                  return(
-                     <div 
-                        className={`pagination-item ${i === activeIndex && 'pagination-item__active '}`}
-                        onClick={() => setPage(i + 1)}
-                        key={i}
-                     >
-                        {i + 1}
-                     </div>
-                  )
-               }
-            })
-         }
+                  if(isRenderSeparate){
+                     return(
+                        <div 
+                           className='paginationItems-separateItem'
+                           key={i}
+                        >
+                           ...
+                        </div>
+                     )
+                  }
+                  else if(isRenderItem){
+                     return(
+                        <div 
+                           className={`paginationItems-item ${i === activeIndex && 'paginationItems-item__active '}`}
+                           onClick={() => setPage(i + 1)}
+                           key={i}
+                        >
+                           {i + 1}
+                        </div>
+                     )
+                  }
+               })
+            }
+         </div>
       </div>
    )
 }
