@@ -65,3 +65,18 @@ export function validatorUlrCategoryParam(categoryParam, validCategoryParams) {
   const param = validCategoryParams.find(el => el._id === categoryParam)
   return param ? param._id : ''
 }
+
+export function loginValidator(login) {
+  if(!login.trim().length){
+    return 'Введите логин'
+  } 
+}
+
+export function passwordValidator(pas) {
+  if(!pas.trim().length){
+    return 'Введите пароль'
+  } 
+  else if(pas.trim().length < 3){
+    return 'Пароль должен быть длиннее'
+  }
+}

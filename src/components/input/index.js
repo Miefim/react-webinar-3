@@ -18,7 +18,12 @@ function Input(props) {
   // Обработчик изменений в поле
   const onChange = (event) => {
     setValue(event.target.value);
-    onChangeDebounce(event.target.value);
+    if(props.throttle) {
+      onChangeDebounce(event.target.value);
+    }
+    else{
+      props.onChange(event.target.value)
+    }
   };
 
   // Обновление стейта, если передан новый value

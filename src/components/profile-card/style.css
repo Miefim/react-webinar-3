@@ -1,0 +1,12 @@
+.ProfileCard {
+   box-sizing: border-box;
+   padding: 20px;
+}
+
+.ProfileCard-title {
+   margin-bottom: 30px;
+}
+
+.ProfileCard-item {
+   margin-bottom: 20px;
+} 

@@ -1,4 +1,4 @@
-import {memo, useCallback, useMemo} from 'react';
+import {memo, useCallback} from 'react';
 import {useParams} from "react-router-dom";
 import useStore from "../../hooks/use-store";
 import useSelector from "../../hooks/use-selector";
@@ -10,6 +10,7 @@ import Navigation from "../../containers/navigation";
 import Spinner from "../../components/spinner";
 import ArticleCard from "../../components/article-card";
 import LocaleSelect from "../../containers/locale-select";
+import User from '../../containers/user';
 
 function Article() {
   const store = useStore();
@@ -35,6 +36,7 @@ function Article() {
 
   return (
     <PageLayout>
+      <User/>
       <Head title={select.article.title}>
         <LocaleSelect/>
       </Head>

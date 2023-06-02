@@ -1,0 +1,17 @@
+.UserBar {
+   border-bottom: 1px solid #DCDCDC;
+   box-sizing: border-box;
+   padding: 10px 20px;
+   height: 41px;
+   display: flex;
+   align-items: center;
+   justify-content: end;
+}
+
+.UserBar-userName {
+   margin-right: 23px;
+   font-size: 13px;
+   line-height: 14.95px;
+   color: #0087E9;
+   text-decoration: underline;
+}
