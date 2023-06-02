@@ -20,7 +20,7 @@ import Spinner from "../../components/spinner"
 
     useEffect(() => {
       if(!select.userData){
-        navigate('/auth', {replace: true})
+        navigate('/login', {replace: true})
       }
     }, [select.userData])
 

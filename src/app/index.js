@@ -30,7 +30,7 @@ function App() {
       <Routes>
         <Route path={''} element={<Main/>}/>
         <Route path={'/articles/:id'} element={<Article/>}/>
-        <Route path={'/auth'} element={<Auth/>}/>
+        <Route path={'/login'} element={<Auth/>}/>
         <Route path={'/profile'} element={<Profile/>}/>
       </Routes>
 

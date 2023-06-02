@@ -33,7 +33,7 @@ function User() {
             profileLink='/profile'
             userName={select.userName} 
             onLogOut={callbacks.logOut} 
-            onSignIn={() => navigate('/auth')} 
+            onSignIn={() => navigate('/login')} 
             t={t}
          />
       </Spinner>
