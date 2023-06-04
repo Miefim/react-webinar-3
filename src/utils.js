@@ -58,7 +58,7 @@ export function sortByHierarchy(items) {
     [...new Array(el.degree)].forEach(() => el.title = `- ${el.title}`)
   })
 
-  return [{value: '', title: 'Все'},...result];
+  return [{value: '', title: 'Все'}, ...result];
 }
 
 export function validatorUlrCategoryParam(categoryParam, validCategoryParams) {
@@ -79,4 +79,17 @@ export function passwordValidator(pas) {
   else if(pas.trim().length < 3){
     return 'Пароль должен быть длиннее'
   }
+}
+
+export function errorMessageHandler(errors) {
+  let result = ''
+  errors.forEach((error, i) => {
+    if(i === 0){
+      result += error.message
+    }
+    else {
+      result += `, ${error.message}`
+    }
+  })
+  return result
 }

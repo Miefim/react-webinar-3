@@ -1,5 +1,4 @@
-import {memo, useEffect} from "react"
-import {useNavigate} from "react-router-dom"
+import {memo} from "react"
 import useTranslate from "../../hooks/use-translate"
 import useSelector from "../../hooks/use-selector"
 import PageLayout from "../../components/page-layout"
@@ -11,18 +10,12 @@ import ProfileCard from "../../components/profile-card"
 import Spinner from "../../components/spinner"
 
   function Profile() {
-    const navigate = useNavigate()
 
     const select = useSelector(state => ({
-      userData: state.user.userData,
-      waiting: state.user.waiting,
+      loggedIn: state.auth.loggedIn,
+      profileData: state.profile.profileData,
+      waiting: state.profile.waiting,
     }))
-
-    useEffect(() => {
-      if(!select.userData){
-        navigate('/login', {replace: true})
-      }
-    }, [select.userData])
 
     const {t} = useTranslate();
 
@@ -34,7 +27,7 @@ import Spinner from "../../components/spinner"
         </Head>
         <Navigation />
         <Spinner active={select.waiting}>
-          <ProfileCard user={select.userData} t={t}/>
+          <ProfileCard user={select.profileData} t={t}/>
         </Spinner>
       </PageLayout>
     );

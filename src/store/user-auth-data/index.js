@@ -1,10 +1,11 @@
 import StoreModule from "../module";
+import {errorMessageHandler} from "../../utils";
 
-class UserState extends StoreModule {
+class UserAuthDataState extends StoreModule {
 
    initState() {
-      return {
-         userData: null, 
+      return { 
+         loggedIn: false,
          token: null,
          waiting: false,
          signInError: null,
@@ -33,25 +34,30 @@ class UserState extends StoreModule {
             },
             body: JSON.stringify(authData)  
          })
-
-         if(!response.ok){
-            throw new Error(`${response.status === 400 ? 'Неверный логин/пароль' : 'Ошибка сервера'}`) 
-         }
-
+         
          const json = await response.json()
-
+         
+         if(!response.ok && json){
+            this.setState({
+               ...this.getState(),
+               signInError: errorMessageHandler(json.error.data.issues),
+               waiting: false,
+            }, `Запись ошибки`) 
+            return
+         }
+         
          this.setState({
             ...this.getState(),
-            userData: json.result.user,
+            loggedIn: true,
             token: json.result.token,
             waiting: false,
-         }, `Запись данных юзера`)
+         }, `Запись данных авторизации`)
 
       } catch (error) {
         
          this.setState({
             ...this.getState(),
-            signInError: error.message,
+            signInError: 'Непредвиденная ошибка',
             waiting: false,
          }, `Запись ошибки`)
 
@@ -75,12 +81,7 @@ class UserState extends StoreModule {
             }  
          })
 
-         this.setState({
-            ...this.getState(),
-            userData: null,
-            token: null,
-            waiting: false,
-         }, `Запись данных юзера`)
+         this.resetUserAuthDataState()
 
       } catch (error) {
 
@@ -93,52 +94,18 @@ class UserState extends StoreModule {
       }
    }
 
-   async getUserData(token) {
-      try {
-
-         this.setState({
-            ...this.getState(),
-            waiting: true,
-            error: null
-         }, `Изменение статуса загрузки`)
-
-         const response = await fetch('/api/v1/users/self', {
-            headers: {
-               'Content-Type': 'application/json',
-               'X-Token': token
-            } 
-         })
-         const json = await response.json() 
-
-         this.setState({
-            ...this.getState(),
-            userData: json.result,
-            waiting: false,
-         }, `Запись данных юзера`)
-
-      } catch (error) {
-
-         this.setState({
-            ...this.getState(),
-            error: error,
-            waiting: false,
-         }, `Запись ошибки`)
-
-      }
-   }
-
-   setToken(token) {
+   setUserAuthDataParams(newParams) {
       this.setState({
          ...this.getState(),
-         token: token
-      }, `Запись токена`)
+         ...newParams
+      }, `Запись параметров авторизации`)
    }
 
-   resetUserState() {
+   resetUserAuthDataState() {
       this.setState({
          ...this.initState(),
-      }, `Сброс стейта пользователя`)
+      }, `Сброс стейта авторизцаии`)
    }
 }
 
-export default UserState;
+export default UserAuthDataState;

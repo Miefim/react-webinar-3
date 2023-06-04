@@ -1,8 +1,8 @@
-import {memo, useCallback, useEffect} from 'react';
-import {useNavigate} from "react-router-dom"
+import {memo, useCallback} from 'react';
 import useStore from "../../hooks/use-store"
 import useSelector from "../../hooks/use-selector"
 import useTranslate from "../../hooks/use-translate"
+import useInit from "../../hooks/use-init"
 import PageLayout from "../../components/page-layout"
 import Head from "../../components/head"
 import Navigation from "../../containers/navigation"
@@ -13,25 +13,19 @@ import User from '../../containers/user'
 
 function Auth() {
 
-   const store = useStore();
-   const navigate = useNavigate()
-   
-   const select = useSelector(state => ({
-      userData: state.user.userData,
-      token: state.user.token,
-      waiting: state.user.waiting,
-      err: state.user.signInError
-   }))
+   const store = useStore()
 
-   useEffect(() => {
-      if(select.userData){
-         localStorage.setItem('token', select.token)
-         navigate('/profile', {replace: true})
-      }
-   }, [select.userData])
+   useInit(() => store.actions.auth.setUserAuthDataParams({signInError: null}), [])
+
+   const select = useSelector(state => ({
+      loggedIn: state.auth.loggedIn,
+      authWaiting: state.auth.waiting,
+      profileWaiting: state.profile.waiting,
+      err: state.auth.signInError
+   }))
    
    const callbacks = {
-      signIn: useCallback((log, pas) => store.actions.user.signIn(log, pas), [store]),
+      signIn: useCallback((log, pas) => store.actions.auth.signIn(log, pas), [store]),
    }
    
    const {t} = useTranslate();
@@ -43,7 +37,7 @@ function Auth() {
             <LocaleSelect/>
          </Head>
          <Navigation/>
-         <Spinner active={select.waiting}>
+         <Spinner active={select.authWaiting || select.profileWaiting}>
             <AuthCard signIn={callbacks.signIn} serverErr={select.err} t={t}/>
          </Spinner>
       </PageLayout>
