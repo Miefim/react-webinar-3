@@ -1,6 +1,8 @@
 import {memo} from "react"
 import useTranslate from "../../hooks/use-translate"
 import useSelector from "../../hooks/use-selector"
+import useStore from "../../hooks/use-store"
+import useInit from "../../hooks/use-init"
 import PageLayout from "../../components/page-layout"
 import User from "../../containers/user"
 import Head from "../../components/head"
@@ -11,8 +13,12 @@ import Spinner from "../../components/spinner"
 
   function Profile() {
 
+    const store = useStore()
+
+    useInit(() => !select.profileData && store.actions.profile.getProfileData(select.token), [])
+
     const select = useSelector(state => ({
-      loggedIn: state.auth.loggedIn,
+      token: state.auth.token,
       profileData: state.profile.profileData,
       waiting: state.profile.waiting,
     }))

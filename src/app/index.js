@@ -1,12 +1,13 @@
-import {Routes, Route} from "react-router-dom";
+import {Routes, Route, Navigate} from "react-router-dom";
 import useSelector from "../hooks/use-selector";
+import useStore from "../hooks/use-store";
+import useInit from "../hooks/use-init";
 import Main from "./main";
 import Basket from "./basket";
 import Article from "./article";
 import Auth from "./auth";
 import Profile from "./profile"
-import UserDataInit from "../containers/user-data-init";
-import PrivateRoute from "../components/private-router";
+import PrivateRoute from "../containers/private-router";
 
 /**
  * Приложение
@@ -14,26 +15,31 @@ import PrivateRoute from "../components/private-router";
  */
 function App() {
 
-  const select = useSelector(state => ({
-    activeModal: state.modals.name,
-    loggedIn: state.auth.loggedIn
-  }))
+  const store = useStore()
+
+  useInit(() => store.actions.auth.getAuthData(), [])
+
+  const activeModal = useSelector(state => state.modals.name)
 
   return (
-    <UserDataInit>
+    <>
       <Routes>
         <Route path={''} element={<Main/>}/>
         <Route path={'/articles/:id'} element={<Article/>}/>  
-        <Route element={<PrivateRoute condition={!select.loggedIn} redirect='/profile'/>}>
-          <Route path={'/login'} element={<Auth/>}/>
-        </Route>
-        <Route element={<PrivateRoute condition={select.loggedIn} redirect='/login'/>}>
-          <Route path={'/profile'} element={<Profile/>}/>
-        </Route>
+        <Route path={'/login'} element={
+          <PrivateRoute>
+            <Auth/>
+          </PrivateRoute>
+        }/>
+        <Route path={'/profile'} element={
+          <PrivateRoute>
+            <Profile/>
+          </PrivateRoute>
+        }/>
       </Routes>
 
-      {select.activeModal === 'basket' && <Basket/>}
-    </UserDataInit>
+      {activeModal === 'basket' && <Basket/>}
+    </>
   );
 }
 
