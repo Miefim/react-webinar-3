@@ -22,6 +22,10 @@
    margin-bottom: 10px;
 }
 
+.ReplyArea-area::placeholder {
+   color: #000;
+}
+
 .ReplyArea-replyButton {
    margin-right: 10px;
 }

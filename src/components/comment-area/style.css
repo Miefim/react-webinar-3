@@ -18,6 +18,10 @@
    margin-bottom: 10px;
 }
 
+.CommentArea-area::placeholder {
+   color: #000;
+}
+
 .CommentArea-link {
    color: #0087E9;
 }

@@ -36,5 +36,6 @@
   "replyArea.cancelButton": "Отмена",
   "commentItem.deletedCommentMessage": "Комментарий удален по веским причинам",
   "commentItem.hiddenButton": "Свернуть",
-  "commentItem.moreButton": "Развернуть"
+  "commentItem.moreButton": "Развернуть",
+  "textArea.placeholder": "Текст"
 }

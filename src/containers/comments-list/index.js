@@ -58,6 +58,7 @@ function CommentsList() {
           signInLink='/login'
           isAuth={select.isAuth}
           onReply={callbacks.onSendMessage}
+          placeholder={t('textArea.placeholder')}
         />
       }   
       </CommentItem>
@@ -95,6 +96,7 @@ function CommentsList() {
             isAuth={select.isAuth}
             signInLink={'/login'}
             onSend={callbacks.onSendMessage}
+            placeholder={t('textArea.placeholder')}
           />
         }
       </CommentsCard>

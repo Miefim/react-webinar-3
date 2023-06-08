@@ -34,5 +34,6 @@
   "replyArea.cancelButton": "Cancel",
   "commentItem.deletedCommentMessage": "Comment has been deleted",
   "commentItem.hiddenButton": "Hidden",
-  "commentItem.moreButton": "More"
+  "commentItem.moreButton": "More",
+  "textArea.placeholder": "Text"
 }
