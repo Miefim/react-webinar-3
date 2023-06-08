@@ -20,5 +20,19 @@
   "auth.password": "Password",
   "auth.signIn": "Sign in",
   "session.signIn": "Sign In",
-  "session.signOut": "Sign Out"
+  "session.signOut": "Sign Out",
+  "commentItem.reply": "Reply",
+  "commentsCard.title": "Comments",
+  "commentArea.sendButton": "Send",
+  "commentArea.title": "New comment",
+  "commentArea.signInLink": "Login",
+  "commentArea.signInMessage": " to be able to comment",
+  "replyArea.title": "New reply",
+  "replyArea.signInLink": "Login",
+  "replyArea.signInMessage": " to be able to reply",
+  "replyArea.replyButton": "Reply",
+  "replyArea.cancelButton": "Cancel",
+  "commentItem.deletedCommentMessage": "Comment has been deleted",
+  "commentItem.hiddenButton": "Hidden",
+  "commentItem.moreButton": "More"
 }

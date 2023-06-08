@@ -1,0 +1,23 @@
+.CommentArea-title {
+   font-size: 12px;
+   font-weight: 700;
+   margin: 0;
+   margin-bottom: 10px;
+}
+
+.CommentArea-area {
+   box-sizing: border-box;
+   padding: 4px 5px;
+   width: 100%;
+   height: 76px;
+   resize: none;
+   font-family: 'Arial';
+   font-size: 14px;
+   border: 1px solid #666666;
+   outline: none;
+   margin-bottom: 10px;
+}
+
+.CommentArea-link {
+   color: #0087E9;
+}

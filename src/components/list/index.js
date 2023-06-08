@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import Item from "../item";
 import './style.css';
 
-function List({list, renderItem}){
+function List({list, renderItem, borderNone}){
   return (
     <div className='List'>{
       list.map(item =>
-        <div key={item._id} className='List-item'>
+        <div key={item._id} className={!borderNone ? 'List-item' : ''}>
           {renderItem(item)}
         </div>
       )}
@@ -19,6 +19,7 @@ List.propTypes = {
   list: PropTypes.arrayOf(PropTypes.shape({
     _id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
   })).isRequired,
+  borderNone: PropTypes.bool,
   renderItem: PropTypes.func,
 };
 

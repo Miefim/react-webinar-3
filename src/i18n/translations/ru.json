@@ -22,5 +22,19 @@
   "auth.password": "Пароль",
   "auth.signIn": "Войти",
   "session.signIn": "Вход",
-  "session.signOut": "Выход"
+  "session.signOut": "Выход",
+  "commentItem.reply": "Ответить",
+  "commentsCard.title": "Комментарии",
+  "commentArea.sendButton": "Отправить",
+  "commentArea.title": "Новый комментарий",
+  "commentArea.signInLink": "Войдите",
+  "commentArea.signInMessage": ", чтобы иметь возможность комментировать",
+  "replyArea.title": "Новый ответ",
+  "replyArea.signInLink": "Войдите",
+  "replyArea.signInMessage": ", чтобы иметь возможность ответить",
+  "replyArea.replyButton": "Отправить",
+  "replyArea.cancelButton": "Отмена",
+  "commentItem.deletedCommentMessage": "Комментарий удален по веским причинам",
+  "commentItem.hiddenButton": "Свернуть",
+  "commentItem.moreButton": "Развернуть"
 }
