@@ -17,81 +17,89 @@ import CommentArea from "../../components/comment-area"
 
 function CommentsList() {
 
-   const dispatch = useDispatch()
-   const params = useParams()
-   const {t} = useTranslate()
+  const dispatch = useDispatch()
+  const params = useParams()
+  const {t} = useTranslate()
 
-   const select = useSelector(state => ({
-      isAuth: state.session.exists
-   }))
+  const select = useSelector(state => ({
+    isAuth: state.session.exists
+  }))
 
-   const selectRedux = useSelectorRedux(state => ({
-      comments: state.comments.comments,
-      count: state.comments.count,
-      activeComment: state.comments.activeComment,
-      waiting: state.comments.waiting,
-   }), shallowequal)
+  const selectRedux = useSelectorRedux(state => ({
+    comments: state.comments.comments,
+    count: state.comments.count,
+    activeComment: state.comments.activeComment,
+    waiting: state.comments.waiting,
+    error: state.comments.error,
+    sendMessageError: state.comments.sendMessageError
+  }), shallowequal)
 
-   const renderList = useMemo(() => 
-      treeToList(
-         listToTree(
-            formatParentForRootComments(selectRedux.comments, params.id)
-         ), 
-         (item, level) => ({...item, level}
-      )
-   ), [selectRedux.comments]) 
-   
-   const renders = {
-      item: useCallback(item => (
-         <CommentItem 
-            item={item} 
-            t={t} 
-            onActivation={callbacks.onActivationComment} 
-         >
-         {
-            selectRedux.activeComment?._id === item._id && 
-            <ReplyArea 
-               t={t} 
-               onResetActivation={callbacks.onActivationComment} 
-               signInLink='/login'
-               isAuth={select.isAuth}
-               onReply={callbacks.onSendMessage}
-            />
-         }   
-         </CommentItem>
-      ), [selectRedux.activeComment, select.isAuth, t]),
-   }
-   
-   const callbacks = {
-      onActivationComment: useCallback(activeComment => dispatch(commentsAction.setActiveComment(activeComment)), []),
-      onSendMessage: useCallback(async message => {
-         const type = selectRedux.activeComment ? selectRedux.activeComment._type : 'article'
-         const parentId = selectRedux.activeComment ? selectRedux.activeComment._id : params.id
-         await dispatch(commentsAction.sendMessage(message, type, parentId))
-         await dispatch(commentsAction.load(params.id))
-      },[selectRedux.activeComment])
-   }
+  const renderList = useMemo(() => 
+    treeToList(
+      listToTree(
+        formatParentForRootComments(selectRedux.comments, params.id)
+      ), 
+      (item, level) => ({...item, level}
+    )
+  ), [selectRedux.comments]) 
+  
+  const renders = {
+    item: useCallback(item => (
+      <CommentItem 
+        item={item} 
+        t={t} 
+        onActivation={callbacks.onActivationComment} 
+      >
+      {
+        selectRedux.activeComment?._id === item._id && 
+        <ReplyArea 
+          t={t} 
+          onResetActivation={callbacks.onActivationComment} 
+          signInLink='/login'
+          isAuth={select.isAuth}
+          onReply={callbacks.onSendMessage}
+        />
+      }   
+      </CommentItem>
+    ), [selectRedux.activeComment, select.isAuth, t]),
+  }
+  
+  const callbacks = {
+    onActivationComment: useCallback(activeComment => dispatch(commentsAction.setActiveComment(activeComment)), []),
+    onSendMessage: useCallback(async message => {
+      const type = selectRedux.activeComment ? selectRedux.activeComment._type : 'article'
+      const parentId = selectRedux.activeComment ? selectRedux.activeComment._id : params.id
+      await dispatch(commentsAction.sendMessage(message, type, parentId))
+      await dispatch(commentsAction.load(params.id))
+    },[selectRedux.activeComment])
+  }
 
-   return (
-      <Spinner active={selectRedux.waiting}>
-         <CommentsCard t={t} totalComments={selectRedux.count}>
+  return (
+    <Spinner active={selectRedux.waiting}>
+      <CommentsCard t={t} totalComments={selectRedux.count}>
+        {
+          !selectRedux.error
+          ?
             <List
-               list={renderList}
-               renderItem={renders.item} 
-               borderNone={true}
+              list={renderList}
+              renderItem={renders.item} 
+              borderNone={true}
             />
-            {
-               !Boolean(selectRedux.activeComment) && 
-               <CommentArea 
-                  t={t}
-                  isAuth={select.isAuth}
-                  signInLink={'/login'}
-                  onSend={callbacks.onSendMessage}
-               />
-            }
-         </CommentsCard>
-      </Spinner>
-   )
+          :
+            <div>Ошибка сервера</div>
+        }
+        {
+          !selectRedux.activeComment &&
+          <CommentArea 
+            t={t}
+            isAuth={select.isAuth}
+            signInLink={'/login'}
+            onSend={callbacks.onSendMessage}
+          />
+        }
+      </CommentsCard>
+    </Spinner>
+  )
 }
 
 export default memo(CommentsList)
