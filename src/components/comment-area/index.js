@@ -1,9 +1,8 @@
 import {memo, useState} from "react"
-import {Link} from "react-router-dom"
 import PropTypes from "prop-types"
 import "./style.css"
 
-function CommentArea({ signInLink, isAuth, t, onSend, placeholder='' }) {
+function CommentArea({ signIn, isAuth, t, onSend, placeholder='' }) {
 
   const [message, setMessage] = useState('')
 
@@ -24,15 +23,15 @@ function CommentArea({ signInLink, isAuth, t, onSend, placeholder='' }) {
   }
   else {
     return (
-      <div className='CommentArea'>
-        <Link to={signInLink} className='CommentArea-link'>{t('commentArea.signInLink')}</Link>{t('commentArea.signInMessage')}
+      <div className='CommentAreaMessage'>
+        <div className='CommentAreaMessage-link' onClick={signIn}>{t('commentArea.signInLink')}</div>{t('commentArea.signInMessage')}
       </div>   
     )
   }
 }
 
 CommentArea.propTypes = {
-  signInLink: PropTypes.string,
+  signIn: PropTypes.func,
   isAuth: PropTypes.bool,
   t: PropTypes.func,
   onSend: PropTypes.func

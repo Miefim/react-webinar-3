@@ -4,7 +4,7 @@ import dateFormatting from "../../utils/date-formatting"
 import commentsShiftCalc from "../../utils/comments-shift-calc"
 import "./style.css"
 
-function CommentItem({ item, children, t, onActivation, shift=30, maxLevel=10 }) {
+function CommentItem({ item, userId, children, t, onActivation, shift=30, maxLevel=10 }) {
       
   const commentRef = useRef()
   const [isCollapsed, setIsCollapsed] = useState(null)
@@ -14,8 +14,6 @@ function CommentItem({ item, children, t, onActivation, shift=30, maxLevel=10 })
       setIsCollapsed(true)
     }
   },[commentRef])
-  
-  const isRenderCollapsingIndicate = item.level % maxLevel === 0
 
   if(item.isDeleted){
     return(
@@ -27,12 +25,8 @@ function CommentItem({ item, children, t, onActivation, shift=30, maxLevel=10 })
   else{
     return (
       <div className='CommentItem' style={{marginLeft: commentsShiftCalc(shift, item.level, maxLevel)}}>
-        {
-          isRenderCollapsingIndicate && 
-          item.level !== 0 && <div className='CommentItem-treeIndicator'/>
-        }
         <div className='CommentItem-header'>
-          <h5 className='header-name'>{item.author.profile.name}</h5>
+          <h5 className={`header-name ${item.author._id === userId && 'name__author'}`}>{item.author.profile.name}</h5>
           <div className='header-date'>{dateFormatting(item.dateCreate)}</div>
         </div>
         <div className={`CommentItem-body ${isCollapsed === false && 'CommentItem-body__active'}`} ref={commentRef}>
@@ -72,6 +66,7 @@ CommentItem.propTypes = {
     }),
     _id: PropTypes.string
   }).isRequired,
+  userId: PropTypes.string,
   children: PropTypes.node,
   t: PropTypes.func,
   onActivation: PropTypes.func,

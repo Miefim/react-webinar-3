@@ -1,4 +1,10 @@
 export default function commentsShiftCalc(shift, lvl, maxLvl=10) {
 
-  return shift * (lvl % maxLvl)
+  if(lvl > maxLvl) {
+    return shift * maxLvl
+  }
+  else {
+    return shift * lvl
+  }
+  
 }

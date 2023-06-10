@@ -24,7 +24,7 @@ function reducer(state = initialState, action) {
       return { ...state, waiting: true, sendMessageError: null };
   
     case "comments/sendMessage-success":
-      return { ...state, waiting: false };
+      return { ...state, comments: [...state.comments, action.payload], waiting: false, activeComment: null };
   
     case "comments/sendMessage-error":
       return { ...state, waiting: false, sendMessageError: action.payload }

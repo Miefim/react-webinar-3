@@ -1,6 +1,6 @@
 import React, {memo, useCallback, useMemo} from "react"
 import {useDispatch, useSelector as useSelectorRedux} from "react-redux"
-import {useParams} from "react-router-dom"
+import {useParams, useNavigate, useLocation} from "react-router-dom"
 import useSelector from "../../hooks/use-selector"
 import useTranslate from "../../hooks/use-translate"
 import shallowequal from "shallowequal"
@@ -11,18 +11,20 @@ import Spinner from "../../components/spinner"
 import commentsAction from "../../store-redux/comments/actions"
 import listToTree from "../../utils/list-to-tree"
 import treeToList from "../../utils/tree-to-list"
-import formatParentForRootComments from "../../utils/format-parent-root-comments"
 import ReplyArea from "../../components/reply-area"
 import CommentArea from "../../components/comment-area"
 
 function CommentsList() {
 
+  const navigate = useNavigate()
   const dispatch = useDispatch()
+  const location = useLocation()
   const params = useParams()
   const {t} = useTranslate()
 
   const select = useSelector(state => ({
-    isAuth: state.session.exists
+    isAuth: state.session.exists,
+    userId: state.session.user?._id
   }))
 
   const selectRedux = useSelectorRedux(state => ({
@@ -36,17 +38,16 @@ function CommentsList() {
 
   const renderList = useMemo(() => 
     treeToList(
-      listToTree(
-        formatParentForRootComments(selectRedux.comments, params.id)
-      ), 
+      listToTree(selectRedux.comments, params.id), 
       (item, level) => ({...item, level}
     )
   ), [selectRedux.comments]) 
-  
+
   const renders = {
     item: useCallback(item => (
       <CommentItem 
         item={item} 
+        userId={select.userId}
         t={t} 
         onActivation={callbacks.onActivationComment} 
       >
@@ -55,7 +56,7 @@ function CommentsList() {
         <ReplyArea 
           t={t} 
           onResetActivation={callbacks.onActivationComment} 
-          signInLink='/login'
+          signIn={callbacks.onSignIn}
           isAuth={select.isAuth}
           onReply={callbacks.onSendMessage}
           placeholder={t('textArea.placeholder')}
@@ -67,12 +68,12 @@ function CommentsList() {
   
   const callbacks = {
     onActivationComment: useCallback(activeComment => dispatch(commentsAction.setActiveComment(activeComment)), []),
-    onSendMessage: useCallback(async message => {
+    onSendMessage: useCallback(message => {
       const type = selectRedux.activeComment ? selectRedux.activeComment._type : 'article'
       const parentId = selectRedux.activeComment ? selectRedux.activeComment._id : params.id
-      await dispatch(commentsAction.sendMessage(message, type, parentId))
-      await dispatch(commentsAction.load(params.id))
-    },[selectRedux.activeComment])
+      dispatch(commentsAction.sendMessage(message, type, parentId))
+    },[selectRedux.activeComment]),
+    onSignIn: useCallback(() => navigate('/login', {state: {back: location.pathname}}), [location.pathname]), 
   }
 
   return (
@@ -94,7 +95,7 @@ function CommentsList() {
           <CommentArea 
             t={t}
             isAuth={select.isAuth}
-            signInLink={'/login'}
+            signIn={callbacks.onSignIn}
             onSend={callbacks.onSendMessage}
             placeholder={t('textArea.placeholder')}
           />

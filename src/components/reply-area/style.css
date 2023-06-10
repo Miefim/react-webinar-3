@@ -41,6 +41,12 @@
    cursor: pointer;
 }
 
-.ReplyArea-link {
+.ReplyAreaMessage {
+   margin-top: 30px;
+   display: flex;
+}
+
+.ReplyAreaMessage-link {
    color: #0087E9;
+   cursor: pointer;
 }

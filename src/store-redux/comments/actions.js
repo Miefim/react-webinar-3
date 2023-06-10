@@ -26,27 +26,31 @@ export default {
 
   sendMessage: (text, type, parentId) => {
     return async (dispatch, getState, services) => {
-
-    const data = {
-      text: text,
-      parent: {
-        _id: parentId,
-        _type: type
+      
+      if(!text.trim() || !type || !parentId) {
+        return
       }
-    }
 
-    const jsonData = JSON.stringify(data)
+      const data = {
+        text: text,
+        parent: {
+          _id: parentId,
+          _type: type
+        }
+      }
 
-    dispatch({type: 'comments/sendMessage-start'})
+      const jsonData = JSON.stringify(data)
+
+      dispatch({type: 'comments/sendMessage-start'})
 
       try {
         const res = await services.api.request({
-          url: `/api/v1/comments?lang=ru`,
+          url: `/api/v1/comments?lang=ru&fields=_type,text,isDeleted,parent,dateUpdate,dateCreate,author(profile(name))`,
           method: "POST",
           body: jsonData
         })
 
-        dispatch({type: 'comments/sendMessage-success', payload: {comments: res.data.result}})
+        dispatch({type: 'comments/sendMessage-success', payload: res.data.result})
 
       } catch (e) {
         

@@ -22,6 +22,11 @@
    color: #000;
 }
 
-.CommentArea-link {
+.CommentAreaMessage {
+   display: flex;
+}
+
+.CommentAreaMessage-link {
    color: #0087E9;
+   cursor: pointer;
 }

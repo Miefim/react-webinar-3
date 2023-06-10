@@ -1,9 +1,8 @@
 import {memo, useState} from "react"
-import {Link} from "react-router-dom"
 import PropTypes from "prop-types"
 import "./style.css"
 
-function ReplyArea({ isAuth, signInLink, t, onReply, onResetActivation, placeholder='' }) {
+function ReplyArea({ isAuth, signIn, t, onReply, onResetActivation, placeholder='' }) {
 
   const [reply, setReply] = useState('')
 
@@ -30,10 +29,10 @@ function ReplyArea({ isAuth, signInLink, t, onReply, onResetActivation, placehol
   }
   else {
     return (
-      <div className='ReplyArea'>
-        <Link to={signInLink} className='ReplyArea-link'>
+      <div className='ReplyAreaMessage'>
+        <div className='ReplyAreaMessage-link' onClick={signIn}>
           {t('replyArea.signInLink')}
-        </Link>
+        </div>
         {t('replyArea.signInMessage')}
         <button 
           className='ReplyArea-cancelButton' 
@@ -48,7 +47,7 @@ function ReplyArea({ isAuth, signInLink, t, onReply, onResetActivation, placehol
 
 ReplyArea.propTypes = {
   isAuth: PropTypes.bool,
-  signInLink: PropTypes.string,
+  signIn: PropTypes.func,
   t: PropTypes.func,
   onReply: PropTypes.func,
   onResetActivation: PropTypes.func

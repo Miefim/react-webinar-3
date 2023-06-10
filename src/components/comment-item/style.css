@@ -56,10 +56,6 @@
    box-shadow: 2px 2px 2px #00000050;
 }
 
-.CommentItem-treeIndicator {
-   width: 50%;
-   margin-bottom: 10px;
-   height: 10px;
-   border-bottom: 1px solid #0087E9;
-   border-right: 1px solid #0087E9;
+.name__author {
+   color: #666666;
 }
