@@ -21,6 +21,7 @@
 }
 
 .CommentItem-body {
+   word-break: break-word;
    font-size: 14px;
    line-height: 16.1px;
    margin-bottom: 10px;

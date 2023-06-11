@@ -1,4 +1,4 @@
-import React, {memo, useCallback, useMemo} from "react"
+import React, {memo, useCallback, useMemo, useState} from "react"
 import {useDispatch, useSelector as useSelectorRedux} from "react-redux"
 import {useParams, useNavigate, useLocation} from "react-router-dom"
 import useSelector from "../../hooks/use-selector"
@@ -10,7 +10,7 @@ import CommentItem from "../../components/comment-item"
 import Spinner from "../../components/spinner"
 import commentsAction from "../../store-redux/comments/actions"
 import listToTree from "../../utils/list-to-tree"
-import treeToList from "../../utils/tree-to-list"
+import commentsShiftCalc from "../../utils/comments-shift-calc"
 import ReplyArea from "../../components/reply-area"
 import CommentArea from "../../components/comment-area"
 
@@ -22,11 +22,16 @@ function CommentsList() {
   const params = useParams()
   const {t} = useTranslate()
 
+  const constants = {
+    maxLevel: 10,
+    sampling: 30
+  }
+
   const select = useSelector(state => ({
     isAuth: state.session.exists,
     userId: state.session.user?._id
   }))
-
+  
   const selectRedux = useSelectorRedux(state => ({
     comments: state.comments.comments,
     count: state.comments.count,
@@ -35,35 +40,45 @@ function CommentsList() {
     error: state.comments.error,
     sendMessageError: state.comments.sendMessageError
   }), shallowequal)
-
-  const renderList = useMemo(() => 
-    treeToList(
-      listToTree(selectRedux.comments, params.id), 
-      (item, level) => ({...item, level}
-    )
-  ), [selectRedux.comments]) 
+  
+  const renderList = useMemo(() => listToTree(selectRedux.comments, params.id), [selectRedux.comments]) 
 
   const renders = {
-    item: useCallback(item => (
-      <CommentItem 
-        item={item} 
-        userId={select.userId}
-        t={t} 
-        onActivation={callbacks.onActivationComment} 
-      >
-      {
-        selectRedux.activeComment?._id === item._id && 
-        <ReplyArea 
+    item: useCallback((item, level=0) => {
+      const shift = commentsShiftCalc(constants.sampling, level, constants.maxLevel)
+      const shiftForArea = commentsShiftCalc(constants.sampling, level + 1, constants.maxLevel)
+      return(
+        <CommentItem 
+          item={item} 
+          userId={select.userId}
           t={t} 
-          onResetActivation={callbacks.onActivationComment} 
-          signIn={callbacks.onSignIn}
-          isAuth={select.isAuth}
-          onReply={callbacks.onSendMessage}
-          placeholder={t('textArea.placeholder')}
-        />
-      }   
-      </CommentItem>
-    ), [selectRedux.activeComment, select.isAuth, t]),
+          onActivation={callbacks.onActivationComment}
+          shift={shift}
+        >
+          {
+            item.children && 
+            <List 
+              list={item.children} 
+              renderItem={renders.item} 
+              borderNone={true} 
+              itemProps={level + 1}
+            />
+          }
+          {
+            selectRedux.activeComment?._id === item._id && 
+            <ReplyArea 
+              t={t} 
+              onResetActivation={callbacks.onActivationComment} 
+              signIn={callbacks.onSignIn}
+              isAuth={select.isAuth}
+              onReply={callbacks.onSendMessage}
+              placeholder={t('textArea.placeholder')}
+              shift={shiftForArea}
+            />
+          }   
+        </CommentItem>
+      )
+    }, [selectRedux.activeComment, select.isAuth, t]),
   }
   
   const callbacks = {

@@ -1,5 +1,5 @@
 .ReplyArea {
-   margin-top: 30px;
+   margin-bottom: 30px;
 }
 
 .ReplyArea-title {
@@ -42,7 +42,6 @@
 }
 
 .ReplyAreaMessage {
-   margin-top: 30px;
    display: flex;
 }
 

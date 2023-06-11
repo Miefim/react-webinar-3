@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import Item from "../item";
 import './style.css';
 
-function List({list, renderItem, borderNone}){
+function List({list, renderItem, borderNone, itemProps}){
   return (
     <div className='List'>{
       list.map(item =>
         <div key={item._id} className={!borderNone ? 'List-item' : ''}>
-          {renderItem(item)}
+          {renderItem(item, itemProps)}
         </div>
       )}
     </div>

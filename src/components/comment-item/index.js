@@ -1,11 +1,10 @@
 import {memo, useEffect, useRef, useState} from "react"
 import PropTypes from "prop-types"
 import dateFormatting from "../../utils/date-formatting"
-import commentsShiftCalc from "../../utils/comments-shift-calc"
 import "./style.css"
 
-function CommentItem({ item, userId, children, t, onActivation, shift=30, maxLevel=10 }) {
-      
+function CommentItem({ item, userId, children, t, onActivation, shift }) {
+
   const commentRef = useRef()
   const [isCollapsed, setIsCollapsed] = useState(null)
   
@@ -17,32 +16,34 @@ function CommentItem({ item, userId, children, t, onActivation, shift=30, maxLev
 
   if(item.isDeleted){
     return(
-      <div className='CommentItem__deleted' style={{marginLeft: commentsShiftCalc(shift, item.level, maxLevel)}}>
+      <div className='CommentItem__deleted' style={{marginLeft: shift}}>
         {t('commentItem.deletedCommentMessage')}
       </div>
     )
   }
   else{
     return (
-      <div className='CommentItem' style={{marginLeft: commentsShiftCalc(shift, item.level, maxLevel)}}>
-        <div className='CommentItem-header'>
-          <h5 className={`header-name ${item.author._id === userId && 'name__author'}`}>{item.author.profile.name}</h5>
-          <div className='header-date'>{dateFormatting(item.dateCreate)}</div>
-        </div>
-        <div className={`CommentItem-body ${isCollapsed === false && 'CommentItem-body__active'}`} ref={commentRef}>
-          {item.text} 
-        </div>
-        <div className='CommentItem-footer'>
-          <button className='footer-replyButton' onClick={() => onActivation(item)}>{t('commentItem.reply')}</button>
-          {
-            isCollapsed !== null && 
-            <button className='footer-replyButton' onClick={() => setIsCollapsed(!isCollapsed)}>
-              {isCollapsed ? t('commentItem.moreButton') : t('commentItem.hiddenButton')}
-            </button>
-          }
+      <>
+        <div className='CommentItem' style={{marginLeft: shift}}>
+          <div className='CommentItem-header'>
+            <h5 className={`header-name ${item.author._id === userId && 'name__author'}`}>{item.author.profile.name}</h5>
+            <div className='header-date'>{dateFormatting(item.dateCreate)}</div>
+          </div>
+          <div className={`CommentItem-body ${isCollapsed === false && 'CommentItem-body__active'}`} ref={commentRef}>
+            {item.text} 
+          </div>
+          <div className='CommentItem-footer'>
+            <button className='footer-replyButton' onClick={() => onActivation(item)}>{t('commentItem.reply')}</button>
+            {
+              isCollapsed !== null && 
+              <button className='footer-replyButton' onClick={() => setIsCollapsed(!isCollapsed)}>
+                {isCollapsed ? t('commentItem.moreButton') : t('commentItem.hiddenButton')}
+              </button>
+            }
+          </div>
         </div>
         {children}
-      </div>
+      </>
     )
   }
 }
@@ -67,11 +68,10 @@ CommentItem.propTypes = {
     _id: PropTypes.string
   }).isRequired,
   userId: PropTypes.string,
+  shift: PropTypes.number,
   children: PropTypes.node,
   t: PropTypes.func,
   onActivation: PropTypes.func,
-  shift: PropTypes.number,
-  maxLevel: PropTypes.number,
 }
 
 CommentItem.defaultProps = {

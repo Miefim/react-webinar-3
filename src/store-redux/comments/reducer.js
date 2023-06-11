@@ -10,7 +10,7 @@ const initialState = {
 function reducer(state = initialState, action) {
   switch (action.type) {
     case "comments/load-start":
-      return { ...state, comments: [], count: 0, activeComment: null, waiting: true, error: null };
+      return { ...state, comments: [], count: 0, waiting: true, error: null };
   
     case "comments/load-success":
       return { ...state, comments: action.payload.comments.items, count: action.payload.comments.count, waiting: false };
