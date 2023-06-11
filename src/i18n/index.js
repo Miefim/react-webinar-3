@@ -23,14 +23,14 @@ class I18nService {
     for (const listener of this.listeners) listener(this.language)
   }
 
-  translate(text, plural) {
+  translate(text, plural, language) {
     
-    let result = translations[this.language] && (text in translations[this.language])
-      ? translations[this.language][text]
+    let result = translations[language] && (text in translations[language])
+      ? translations[language][text]
       : text;
   
     if (typeof plural !== 'undefined'){
-      const key = new Intl.PluralRules(this.language).select(plural);
+      const key = new Intl.PluralRules(language).select(plural);
       if (key in result) {
         result = result[key];
       }

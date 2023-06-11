@@ -11,7 +11,7 @@ export default function useTranslate() {
   const services = useServices()
 
   const [lang, setLang] = useState(services.i18n.language)
-  const t = useCallback((text, plural) => services.i18n.translate(text, plural), [lang])
+  const t = useCallback((text, plural, language=lang) => services.i18n.translate(text, plural, language), [lang])
 
   useEffect(() => {services.i18n.setLanguage(lang)}, [lang])
 
