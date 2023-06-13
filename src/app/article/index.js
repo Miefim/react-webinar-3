@@ -22,12 +22,12 @@ function Article() {
   const dispatch = useDispatch();
   // Параметры из пути /articles/:id
   const params = useParams();
-  const {t} = useTranslate();
+  const {t, lang} = useTranslate();
   useInit(() => {
     //store.actions.article.load(params.id);
     dispatch(articleActions.load(params.id));
     dispatch(commentsAction.load(params.id));
-  }, [params.id, t]);
+  }, [params.id, lang]);
   const select = useSelectorRedux(state => ({
     article: state.article.data,
     waiting: state.article.waiting,
